@@ -15,35 +15,11 @@ const DISCONNECT_TIMEOUT = 5000;
 
 const io = require("socket.io-client");
 
-class HTTPClient {
-    /**Implementation of getRoomInfo
-     * @see https://github.com/m20-sch57/thetruehat/blob/master/docs/main.md
-     *
-     * @param key
-     * @return {Promise<void>}
-     */
-    static async getRoomInfo (key) {}
-
-    /**Implementation of getFreeKey
-     * @see https://github.com/m20-sch57/thetruehat/blob/master/docs/main.md
-     *
-     * @return {Promise<void>}
-     */
-    static async getFreeKey () {}
-
-    /**Implementation of getDictionaryList
-     * @see https://github.com/m20-sch57/thetruehat/blob/master/docs/main.md
-     *
-     * @return {Promise<void>}
-     */
-    static async getDictionaryList () {}
-}
-
-class SocketClient {
+class WebClient {
     constructor() {
         this.gameLog = [];
 
-        this.socket = io.connect(window.location.origin, {"path": window.location.pathname + "socket.io"});
+        this.socket = io.connect(window.location.origin, {"path": window.location.pathname + "socket.io"}); // TODO: Rewrite paths.
 
         for (let event in [
             "sPlayerJoined",
@@ -71,14 +47,51 @@ class SocketClient {
         }
     }
 
-    #logSignal(event, data) {
+    #logRequest (request, data) {
         let level = "info";
-        if (event === "sFailure") level = "warn";
-        this.#log({event, data,
+        this.#log({
+            "event": {"type": "HTTP", "name": request},
+            data,
             // "time": timeSync.getTime(), // TODO: Rewrite
             // "humanTime": (new Date(timeSync.getTime()).toISOString())
         }, level);
     }
+
+    #logSignal (event, data) {
+        let level = "info";
+        if (event === "sFailure") level = "warn";
+        this.#log({
+            "event": {"type": "Socket", "name": event},
+            data,
+            // "time": timeSync.getTime(), // TODO: Rewrite
+            // "humanTime": (new Date(timeSync.getTime()).toISOString())
+        }, level);
+    }
+
+    fetch (/*TODO: arguments*/) {
+        this.#logRequest("getRoomInfo", {});
+        // TODO: Implementation
+    }
+
+    /**Implementation of getRoomInfo
+     * @see https://github.com/m20-sch57/thetruehat/blob/master/docs/main.md
+     *
+     */
+    getRoomInfo (key) {
+        // this.fetch( ... );
+    }
+
+    /**Implementation of getFreeKey
+     * @see https://github.com/m20-sch57/thetruehat/blob/master/docs/main.md
+     *
+     */
+    getFreeKey () {}
+
+    /**Implementation of getDictionaryList
+     * @see https://github.com/m20-sch57/thetruehat/blob/master/docs/main.md
+     *
+     */
+    getDictionaryList () {}
 
     emit(event, data) {
         this.socket.emit(event, data);
@@ -162,5 +175,12 @@ class SocketClient {
     }
     ONsGameEnded (callback) {
         this.on("sGameEnded", callback)
+    }
+}
+
+class Application {
+    constructor() {
+        this.client = new WebClient();
+
     }
 }
