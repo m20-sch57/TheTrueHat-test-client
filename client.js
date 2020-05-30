@@ -1,6 +1,6 @@
 "use strict"
 
-const config = require("config.json");
+const config = require("./config.json");
 
 // const SPEAKER_READY = "Я готов объяснять";
 // const LISTENER_READY = "Я готов отгадывать";
@@ -40,7 +40,7 @@ class WebClient {
         }
     }
 
-    #log(data, level) {
+    #log = function (data, level) {
         level = level || "info";
         this.gameLog.push(data);
         if (config.writeLogs) {
@@ -48,7 +48,7 @@ class WebClient {
         }
     }
 
-    #logRequest (request, data) {
+    #logRequest = function (request, data) {
         let level = "info";
         this.#log({
             "event": {"type": "HTTP-request", "name": request},
@@ -58,7 +58,7 @@ class WebClient {
         }, level);
     }
 
-    #logResponse (response, data) {
+    #logResponse = function (response, data) {
         let level = "info";
         this.#log({
             "event": {"type": "HTTP-response", "name": response},
@@ -68,7 +68,7 @@ class WebClient {
         }, level);
     }
 
-    #logServerSignal (event, data) {
+    #logServerSignal = function (event, data) {
         let level = "info";
         if (event === "sFailure") level = "warn";
         this.#log({
@@ -79,7 +79,7 @@ class WebClient {
         }, level);
     }
 
-    #logClientSignal (event, data) {
+    #logClientSignal = function (event, data) {
         let level = "info";
         this.#log({
             "event": {"type": "Client-Socket", "name": event},
