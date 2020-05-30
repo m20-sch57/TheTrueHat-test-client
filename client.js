@@ -19,7 +19,8 @@ class WebClient {
     constructor() {
         this.gameLog = [];
 
-        this.socket = io.connect(window.location.origin, {"path": window.location.pathname + "socket.io"}); // TODO: Rewrite paths.
+        this.socket = io.connect(config.protocol + "//" + config.hostname + ":" +config.port,
+            {"path": "/socket.io"});
 
         for (let event in [
             "sPlayerJoined",
