@@ -135,7 +135,7 @@ class WebClient {
      *
      */
     getRoomInfo (key) {
-        this.fetch("getRoomInfo", {path: "/api/getRoomInfo"});
+        this.fetch("getRoomInfo", {path: "/api/getRoomInfo", data: {key}});
     }
 
     /**Implementation of getFreeKey
