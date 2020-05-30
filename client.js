@@ -13,6 +13,8 @@ const MISTAKE_WORD_STATE = "ошибка";
 const TIME_SYNC_DELTA = 60000;
 const DISCONNECT_TIMEOUT = 5000;
 
+const http = require("http");
+const querystring = require("querystring");
 const io = require("socket.io-client");
 
 class WebClient {
@@ -68,9 +70,42 @@ class WebClient {
         }, level);
     }
 
-    fetch (/*TODO: arguments*/) {
-        this.#logRequest("getRoomInfo", {});
-        // TODO: Implementation
+    fetch ({path, method="GET", headers={}, data = null}) {
+        this.#logRequest("...", {}); // TODO: Implementation
+        const options = {
+            protocol: config.protocol,
+            hostname: config.hostname,
+            port: config.port,
+            path,
+            method,
+            headers
+        };
+
+        switch (method) {
+            case "GET":
+                path += "?" + querystring.stringify(data);
+                break;
+            case "POST": // Do not forget about "Content-Type".
+                options.headers["Content-Length"] = Buffer.byteLength(data);
+                break;
+        }
+
+        return new Promise((resolve, reject) => {
+            const req = http.request(options, res => {
+                res.setEncoding("utf8")
+                    .on("error", (err) => reject(err))
+                    .on("data", (data) => resolve(data))
+            }
+            ).on("error", (e) => reject(e))
+
+            switch (method) {
+                case "POST":
+                    req.write(JSON.stringify(data));
+                    break;
+            }
+
+            req.end();
+        });
     }
 
     /**Implementation of getRoomInfo
@@ -78,20 +113,35 @@ class WebClient {
      *
      */
     getRoomInfo (key) {
-        // this.fetch( ... );
+        this.fetch({path: "/api/getRoomInfo"});
     }
 
     /**Implementation of getFreeKey
      * @see https://github.com/m20-sch57/thetruehat/blob/master/docs/main.md
      *
      */
-    getFreeKey () {}
+    getFreeKey () {
+        this.fetch({path: "/api/getFreeKey"});
+    }
 
     /**Implementation of getDictionaryList
      * @see https://github.com/m20-sch57/thetruehat/blob/master/docs/main.md
      *
      */
-    getDictionaryList () {}
+    getDictionaryList () {
+        this.fetch({path: "/api/getDictionaryList"});
+    }
+
+    postFeedback (feedback) {
+        this.fetch({
+            path: "/feedback",
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=utf-8"
+            },
+            data: feedback
+    })
+    }
 
     emit(event, data) {
         this.socket.emit(event, data);

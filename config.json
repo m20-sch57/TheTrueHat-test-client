@@ -1,5 +1,6 @@
 {
-    "domainURL": "http://localhost",
+    "protocol": "http:",
+    "hostname": "localhost",
     "port": 2015,
     "writeLogs": true
 }
