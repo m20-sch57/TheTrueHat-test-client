@@ -59,11 +59,21 @@ class WebClient {
         }, level);
     }
 
-    #logSignal (event, data) {
+    #logServerSignal (event, data) {
         let level = "info";
         if (event === "sFailure") level = "warn";
         this.#log({
-            "event": {"type": "Socket", "name": event},
+            "event": {"type": "Server-Socket", "name": event},
+            data,
+            // "time": timeSync.getTime(), // TODO: Rewrite
+            // "humanTime": (new Date(timeSync.getTime()).toISOString())
+        }, level);
+    }
+
+    #logClientSignal (event, data) {
+        let level = "info";
+        this.#log({
+            "event": {"type": "Client-Socket", "name": event},
             data,
             // "time": timeSync.getTime(), // TODO: Rewrite
             // "humanTime": (new Date(timeSync.getTime()).toISOString())
@@ -140,12 +150,12 @@ class WebClient {
                 "Content-Type": "application/json; charset=utf-8"
             },
             data: feedback
-    })
+        })
     }
 
     emit(event, data) {
         this.socket.emit(event, data);
-        this.#logSignal(event, data);
+        this.#logClientSignal(event, data);
     }
 
     cJoinRoom (key, username) {
@@ -184,45 +194,60 @@ class WebClient {
     }
 
     on (event, callback) {
-        this.socket.on(event, callback);
+        this.socket.on(event, (data) => {
+            this.#logServerSignal(event, data);
+            callback(data);
+        });
     }
 
     ONsPlayerJoined (callback) {
         this.on("sPlayerJoined", callback);
     }
+
     ONsPlayerLeft (callback) {
         this.on("sPlayerLeft", callback)
     }
+
     ONsYouJoined (callback) {
         this.on("sYouJoined", callback)
     }
+
     ONsNewSettings (callback) {
         this.on("sNewSettings", callback)
     }
+
     ONsFailure (callback) {
         this.on("sFailure", callback)
     }
+
     ONsGameStarted (callback) {
         this.on("sGameStarted", callback)
     }
+
     ONsNextTurn (callback) {
         this.on("sNextTurn", callback)
     }
+
     ONsExplanationStarted (callback) {
         this.on("sExplanationStarted", callback)
     }
+
     ONsNewWord (callback) {
         this.on("sNewWord", callback)
     }
+
     ONsWordExplanationEnded (callback) {
         this.on("sWordExplanationEnded", callback)
     }
+
     ONsExplanationEnded (callback) {
         this.on("sExplanationEnded", callback)
     }
+
     ONsWordsToEdit (callback) {
         this.on("sWordsToEdit", callback)
     }
+
     ONsGameEnded (callback) {
         this.on("sGameEnded", callback)
     }
