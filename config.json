@@ -2,5 +2,11 @@
     "protocol": "http:",
     "hostname": "localhost",
     "port": 2015,
-    "writeLogs": true
+    "writeLogs": true,
+    "logs": {
+        "HTTP-request": true,
+        "HTTP-response": true,
+        "Server-Socket": true,
+        "Client-Socket": true
+    }
 }

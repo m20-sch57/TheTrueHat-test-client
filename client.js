@@ -1,17 +1,15 @@
 "use strict"
 
 const config = require("config.json");
-if (config.port !== null) {
-    config.domain = config.domainURL + ":" + config.port;
-}
-const SPEAKER_READY = "Я готов объяснять";
-const LISTENER_READY = "Я готов отгадывать";
-const EXPLAINED_WORD_STATE = "угадал";
-const NOT_EXPLAINED_WORD_STATE = "не угадал";
-const MISTAKE_WORD_STATE = "ошибка";
 
-const TIME_SYNC_DELTA = 60000;
-const DISCONNECT_TIMEOUT = 5000;
+// const SPEAKER_READY = "Я готов объяснять";
+// const LISTENER_READY = "Я готов отгадывать";
+// const EXPLAINED_WORD_STATE = "угадал";
+// const NOT_EXPLAINED_WORD_STATE = "не угадал";
+// const MISTAKE_WORD_STATE = "ошибка";
+//
+// const TIME_SYNC_DELTA = 60000;
+// const DISCONNECT_TIMEOUT = 5000;
 
 const http = require("http");
 const querystring = require("querystring");
@@ -37,7 +35,7 @@ class WebClient {
             "sExplanationEnded",
             "sWordsToEdit",
             "sGameEnded"]) {
-            this.socket.on(event, (data) => this.#logSignal(event, data))
+            this.socket.on(event, (data) => this.#logServerSignal(event, data))
         }
     }
 
@@ -52,7 +50,17 @@ class WebClient {
     #logRequest (request, data) {
         let level = "info";
         this.#log({
-            "event": {"type": "HTTP", "name": request},
+            "event": {"type": "HTTP-request", "name": request},
+            data,
+            // "time": timeSync.getTime(), // TODO: Rewrite
+            // "humanTime": (new Date(timeSync.getTime()).toISOString())
+        }, level);
+    }
+
+    #logResponse (response, data) {
+        let level = "info";
+        this.#log({
+            "event": {"type": "HTTP-response", "name": response},
             data,
             // "time": timeSync.getTime(), // TODO: Rewrite
             // "humanTime": (new Date(timeSync.getTime()).toISOString())
@@ -80,8 +88,8 @@ class WebClient {
         }, level);
     }
 
-    fetch ({path, method="GET", headers={}, data = null}) {
-        this.#logRequest("...", {}); // TODO: Implementation
+    fetch (name, {path, method="GET", headers={}, data = null}) {
+        if (config.logs["HTTP-request"]) this.#logRequest(name, data);
         const options = {
             protocol: config.protocol,
             hostname: config.hostname,
@@ -96,21 +104,24 @@ class WebClient {
                 path += "?" + querystring.stringify(data);
                 break;
             case "POST": // Do not forget about "Content-Type".
-                options.headers["Content-Length"] = Buffer.byteLength(data);
+                if (data !== null) options.headers["Content-Length"] = Buffer.byteLength(data);
                 break;
         }
 
         return new Promise((resolve, reject) => {
             const req = http.request(options, res => {
                 res.setEncoding("utf8")
-                    .on("error", (err) => reject(err))
-                    .on("data", (data) => resolve(data))
+                    .on("error", (err) => this.#log(err, "error"))
+                    .on("data", (data) => {
+                        if (config.logs["HTTP-response"]) this.#logResponse(name, data);
+                        resolve(data);
+                    })
             }
             ).on("error", (e) => reject(e))
 
             switch (method) {
                 case "POST":
-                    req.write(JSON.stringify(data));
+                    if (data !== null) req.write(JSON.stringify(data));
                     break;
             }
 
@@ -123,7 +134,7 @@ class WebClient {
      *
      */
     getRoomInfo (key) {
-        this.fetch({path: "/api/getRoomInfo"});
+        this.fetch("getRoomInfo", {path: "/api/getRoomInfo"});
     }
 
     /**Implementation of getFreeKey
@@ -131,7 +142,7 @@ class WebClient {
      *
      */
     getFreeKey () {
-        this.fetch({path: "/api/getFreeKey"});
+        this.fetch("getFreeKey", {path: "/api/getFreeKey"});
     }
 
     /**Implementation of getDictionaryList
@@ -139,23 +150,25 @@ class WebClient {
      *
      */
     getDictionaryList () {
-        this.fetch({path: "/api/getDictionaryList"});
+        this.fetch("getDictionaryList", {path: "/api/getDictionaryList"});
     }
 
     postFeedback (feedback) {
-        this.fetch({
-            path: "/feedback",
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json; charset=utf-8"
-            },
-            data: feedback
-        })
+        this.fetch("postFeedback",
+            {
+                path: "/feedback",
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8"
+                },
+                data: feedback
+            }
+        );
     }
 
     emit(event, data) {
         this.socket.emit(event, data);
-        this.#logClientSignal(event, data);
+        if (config.logs["Client-Socket"]) this.#logClientSignal(event, data);
     }
 
     cJoinRoom (key, username) {
@@ -194,10 +207,7 @@ class WebClient {
     }
 
     on (event, callback) {
-        this.socket.on(event, (data) => {
-            this.#logServerSignal(event, data);
-            callback(data);
-        });
+        this.socket.on(event, callback);
     }
 
     ONsPlayerJoined (callback) {
@@ -255,7 +265,7 @@ class WebClient {
 
 class Application {
     constructor() {
-        this.client = new WebClient();
+        this.web = new WebClient();
 
     }
 }
