@@ -2,15 +2,6 @@
 
 const config = require("./config.json");
 
-// const SPEAKER_READY = "Я готов объяснять";
-// const LISTENER_READY = "Я готов отгадывать";
-// const EXPLAINED_WORD_STATE = "угадал";
-// const NOT_EXPLAINED_WORD_STATE = "не угадал";
-// const MISTAKE_WORD_STATE = "ошибка";
-//
-// const TIME_SYNC_DELTA = 60000;
-// const DISCONNECT_TIMEOUT = 5000;
-
 const http = require("http");
 const querystring = require("querystring");
 const io = require("socket.io-client");
