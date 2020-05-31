@@ -15,6 +15,7 @@ const http = require("http");
 const querystring = require("querystring");
 const io = require("socket.io-client");
 
+module.exports.WebClient =
 class WebClient {
     constructor() {
         this.gameLog = [];
@@ -247,12 +248,5 @@ class WebClient {
 
     ONsGameEnded (callback) {
         this.on("sGameEnded", callback)
-    }
-}
-
-class Application {
-    constructor() {
-        this.web = new WebClient();
-
     }
 }
