@@ -22,7 +22,7 @@ class WebClient {
         this.socket = io.connect(config.protocol + "//" + config.hostname + ":" +config.port,
             {"path": "/socket.io"});
 
-        for (let event in [
+        for (let event of [
             "sPlayerJoined",
             "sPlayerLeft",
             "sYouJoined",

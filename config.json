@@ -1,7 +1,7 @@
 {
     "protocol": "http:",
     "hostname": "localhost",
-    "port": 2015,
+    "port": 3005,
     "writeLogs": true,
     "logs": {
         "HTTP-request": true,
