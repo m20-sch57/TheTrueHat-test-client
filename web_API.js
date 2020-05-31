@@ -1,6 +1,6 @@
 "use strict"
 
-const config = require("./config.json");
+const defaultConfig = require("./config.json").webDefaultConfig;
 
 const http = require("http");
 const querystring = require("querystring");
@@ -8,7 +8,8 @@ const io = require("socket.io-client");
 
 module.exports.WebClient =
 class WebClient {
-    constructor() {
+    constructor(config={}) {
+        this.config = Object.assign(defaultConfig, config);
         this.gameLog = [];
 
         this.socket = io.connect(config.protocol + "//" + config.hostname + ":" +config.port,
@@ -18,7 +19,7 @@ class WebClient {
     #log = function (data, level) {
         level = level || "info";
         this.gameLog.push(data);
-        if (config.writeLogs) {
+        if (this.config.writeLogs) {
             console[level](data);
         }
     }
@@ -65,11 +66,11 @@ class WebClient {
     }
 
     fetch (name, {path, method="GET", headers={}, data = null}) {
-        if (config.logs["HTTP-request"]) this.#logRequest(name, data);
+        if (this.config.logs["HTTP-request"]) this.#logRequest(name, data);
         const options = {
-            protocol: config.protocol,
-            hostname: config.hostname,
-            port: config.port,
+            protocol: this.config.protocol,
+            hostname: this.config.hostname,
+            port: this.config.port,
             path,
             method,
             headers
@@ -89,7 +90,7 @@ class WebClient {
                 res.setEncoding("utf8")
                     .on("error", (err) => this.#log(err, "error"))
                     .on("data", (data) => {
-                        if (config.logs["HTTP-response"]) this.#logResponse(name, data);
+                        if (this.config.logs["HTTP-response"]) this.#logResponse(name, data);
                         resolve(data);
                     })
             }
@@ -144,7 +145,7 @@ class WebClient {
 
     emit(event, data) {
         this.socket.emit(event, data);
-        if (config.logs["Client-Socket"]) this.#logClientSignal(event, data);
+        if (this.config.logs["Client-Socket"]) this.#logClientSignal(event, data);
     }
 
     cJoinRoom (key, username) {

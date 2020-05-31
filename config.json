@@ -1,12 +1,14 @@
 {
-    "protocol": "http:",
-    "hostname": "localhost",
-    "port": 3005,
-    "writeLogs": true,
-    "logs": {
-        "HTTP-request": true,
-        "HTTP-response": true,
-        "Server-Socket": true,
-        "Client-Socket": true
+    "webDefaultConfig": {
+        "protocol": "http:",
+        "hostname": "localhost",
+        "port": 3005,
+        "writeLogs": true,
+        "logs": {
+            "HTTP-request": true,
+            "HTTP-response": true,
+            "Server-Socket": true,
+            "Client-Socket": true
+        }
     }
 }
