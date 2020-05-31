@@ -21,23 +21,6 @@ class WebClient {
 
         this.socket = io.connect(config.protocol + "//" + config.hostname + ":" +config.port,
             {"path": "/socket.io"});
-
-        for (let event of [
-            "sPlayerJoined",
-            "sPlayerLeft",
-            "sYouJoined",
-            "sNewSettings",
-            "sFailure",
-            "sGameStarted",
-            "sNextTurn",
-            "sExplanationStarted",
-            "sNewWord",
-            "sWordExplanationEnded",
-            "sExplanationEnded",
-            "sWordsToEdit",
-            "sGameEnded"]) {
-            this.socket.on(event, (data) => this.#logServerSignal(event, data))
-        }
     }
 
     #log = function (data, level) {
@@ -135,7 +118,7 @@ class WebClient {
      *
      */
     getRoomInfo (key) {
-        this.fetch("getRoomInfo", {path: "/api/getRoomInfo", data: {key}});
+        return this.fetch("getRoomInfo", {path: "/api/getRoomInfo", data: {key}});
     }
 
     /**Implementation of getFreeKey
@@ -143,7 +126,7 @@ class WebClient {
      *
      */
     getFreeKey () {
-        this.fetch("getFreeKey", {path: "/api/getFreeKey"});
+        return this.fetch("getFreeKey", {path: "/api/getFreeKey"});
     }
 
     /**Implementation of getDictionaryList
@@ -151,11 +134,11 @@ class WebClient {
      *
      */
     getDictionaryList () {
-        this.fetch("getDictionaryList", {path: "/api/getDictionaryList"});
+        return this.fetch("getDictionaryList", {path: "/api/getDictionaryList"});
     }
 
     postFeedback (feedback) {
-        this.fetch("postFeedback",
+        return this.fetch("postFeedback",
             {
                 path: "/feedback",
                 method: "POST",
@@ -208,7 +191,10 @@ class WebClient {
     }
 
     on (event, callback) {
-        this.socket.on(event, callback);
+        this.socket.on(event, (data) => {
+            this.#logServerSignal(event, data);
+            callback(data);
+        });
     }
 
     ONsPlayerJoined (callback) {
