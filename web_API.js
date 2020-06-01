@@ -78,10 +78,13 @@ class WebClient {
 
         switch (method) {
             case "GET":
-                path += "?" + querystring.stringify(data);
+                options.path += "?" + querystring.stringify(data);
                 break;
             case "POST": // Do not forget about "Content-Type".
-                if (data !== null) options.headers["Content-Length"] = Buffer.byteLength(data);
+                if (data !== null) {
+                    data = JSON.stringify(data);
+                    options.headers["Content-Length"] = Buffer.byteLength(data);
+                }
                 break;
         }
 
@@ -98,7 +101,7 @@ class WebClient {
 
             switch (method) {
                 case "POST":
-                    if (data !== null) req.write(JSON.stringify(data));
+                    if (data !== null) req.write(data);
                     break;
             }
 
@@ -130,7 +133,7 @@ class WebClient {
         return this.fetch("getDictionaryList", {path: "/api/getDictionaryList"});
     }
 
-    postFeedback (feedback) {
+    postFeedback (feedback) { // TODO: Какие-то беды с FB. Не критично.
         return this.fetch("postFeedback",
             {
                 path: "/feedback",
