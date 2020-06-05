@@ -1,3 +1,5 @@
+#!/usr/bin/node
+
 "use strict"
 
 const defaultConfig = require("./config.json").webDefaultConfig;
