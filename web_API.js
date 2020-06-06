@@ -14,7 +14,7 @@ class WebClient {
         this.config = Object.assign(defaultConfig, config);
         this.gameLog = [];
 
-        this.socket = io.connect(config.protocol + "//" + config.hostname + ":" +config.port,
+        this.socket = io.connect(this.config.protocol + "//" + this.config.hostname + ":" + this.config.port,
             {"path": "/socket.io"});
     }
 
@@ -166,7 +166,7 @@ class WebClient {
     cApplySettings (settings) {
         this.emit("",
             {
-                "settings": settings
+                settings
             });
     }
     cStartGame () {
@@ -178,11 +178,17 @@ class WebClient {
     cSpeakerReady () {
         this.emit("cSpeakerReady");
     }
-    cEndWordExplanation () {
-        this.emit("cEndWordExplanation");
+    cEndWordExplanation (cause) {
+        this.emit("cEndWordExplanation",
+            {
+                cause
+            });
     }
-    cWordsEdited () {
-        this.emit("cWordsEdited");
+    cWordsEdited (editWords) {
+        this.emit("cWordsEdited",
+            {
+                editWords
+            });
     }
     cEndGame () {
         this.emit("cEndGame");
