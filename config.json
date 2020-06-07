@@ -12,7 +12,6 @@
         }
     },
     "trueClientDefaultConfig": {
-        "reactionTime": 1000,
-        "timeSyncDelta": 60000
+        "reactionTime": 1000
     }
 }
