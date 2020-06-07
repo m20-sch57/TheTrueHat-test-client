@@ -1,0 +1,29 @@
+{
+    "name": "thetruehat-test-client",
+    "description": "Node.js implementation of client(s) for TheTrueHat (see https://github.com/m20-sch57/thetruehat#readme)",
+    "homepage": "https://github.com/m20-sch57/TheTrueHat-test-client#readme",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/m20-sch57/TheTrueHat-test-client.git"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/m20-sch57/TheTrueHat-test-client/issues"
+    },
+    "contributors": [
+        {
+            "name": "Gleb Minaev",
+            "url": "https://github.com/lounres"
+        },
+        {
+            "name": "Alexander Danyarkhodzhaev",
+            "url": "https://github.com/alexdany657"
+        }
+    ],
+    "dependencies": {
+        "socket.io-client": "^2.3.0"
+    },
+    "devDependencies": {
+        "@types/socket.io-client": "^1.4.33"
+    }
+}
