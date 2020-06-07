@@ -1,3 +1,5 @@
+#!/usr/bin/node
+
 "use strict"
 
 const defaultConfig = require("./config.json").webDefaultConfig;
@@ -162,7 +164,7 @@ class WebClient {
         this.emit("cLeaveRoom");
     }
     cApplySettings (settings) {
-        this.emit("",
+        this.emit("cApplySettings",
             {
                 settings
             });
