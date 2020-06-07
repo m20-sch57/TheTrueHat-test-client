@@ -164,7 +164,7 @@ class WebClient {
         this.emit("cLeaveRoom");
     }
     cApplySettings (settings) {
-        this.emit("",
+        this.emit("cApplySettings",
             {
                 settings
             });
