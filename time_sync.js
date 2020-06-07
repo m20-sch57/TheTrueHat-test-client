@@ -1,9 +1,13 @@
+#!/usr/bin/node
+
+"use strict"
+
 /**
  * It is stolen insolently from https://github.com/m20-sch57/thetruehat/blob/736474165828c9444f8196229b7ea2c7c616a489/static/main.js
  */
 
 module.exports.TimeSync =
-class TimeSync {
+class TimeSync { // TODO: Rewrite for Node.js
     constructor(syncInterval) {
         this.syncInterval = syncInterval;
         this.delta = 0;

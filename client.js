@@ -1,3 +1,5 @@
+#!/usr/bin/node
+
 "use strict"
 
 const WebClient = require("./web_API").WebClient;
