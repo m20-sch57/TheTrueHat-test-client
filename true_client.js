@@ -78,8 +78,8 @@ class TruePlayer {
         this.web.cStartGame();
     }
 
-    getExplTime () { // TODO: Нормальная реализация
-        return 1000;
+    getExplTime () {
+        return Math.floor(this.config.minExplTime + (this.config.maxExplTime - this.config.minExplTime) * Math.random());
     }
 
     explainRandomly () {

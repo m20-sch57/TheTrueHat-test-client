@@ -12,6 +12,8 @@
         }
     },
     "trueClientDefaultConfig": {
-        "reactionTime": 1000
+        "reactionTime": 1000,
+        "minExplTime": 5000,
+        "maxExplTime": 20000
     }
 }
