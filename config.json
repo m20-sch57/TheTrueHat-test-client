@@ -11,6 +11,17 @@
             "Client-Socket": true
         }
     },
+    "timeSyncDefaultConfig": {
+        "protocol": "http:",
+        "hostname": "thetruehat.m20-sch57.site",
+        "port": 3005,
+        "writeLogs": false,
+        "logs": {
+            "HTTP-request": false,
+            "HTTP-response": false
+        },
+        "serverTimeMultiplier": 1.0
+    },
     "trueClientDefaultConfig": {
         "reactionTime": 1000,
         "minExplTime": 5000,
