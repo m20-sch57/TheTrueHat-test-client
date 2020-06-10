@@ -21,9 +21,11 @@
         }
     ],
     "dependencies": {
-        "socket.io-client": "^2.3.0"
+        "socket.io-client": "^2.3.0",
+        "yargs": "^15.3.1"
     },
     "devDependencies": {
-        "@types/socket.io-client": "^1.4.33"
+        "@types/socket.io-client": "^1.4.33",
+        "@types/yargs": "^15.0.5"
     }
 }
