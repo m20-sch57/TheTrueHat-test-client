@@ -1,3 +1,3 @@
-export roomsCount=100
-export playersCountAv=10
-export playersCountDelta=5
+export roomsCount=2
+export playersCountAv=3
+export playersCountDelta=1

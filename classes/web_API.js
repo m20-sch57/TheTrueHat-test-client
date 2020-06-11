@@ -73,7 +73,7 @@ class WebClient {
             protocol: this.config.protocol,
             hostname: this.config.hostname,
             port: this.config.port,
-            path,
+            path: this.config.path + path,
             method,
             headers
         };
