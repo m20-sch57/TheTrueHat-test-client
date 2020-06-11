@@ -13,4 +13,9 @@ new (require("./classes/client_wrapper").Wrapper)(
         roomKey: argv.key,
         usersNumber: argv.num,
         username: argv.name,
+        webConfig: {
+            // protocol: "https:",
+            // hostname: "thetruehat.m20-sch57.site",
+            // port: ...
+        }
     });

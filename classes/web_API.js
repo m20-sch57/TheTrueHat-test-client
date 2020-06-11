@@ -157,7 +157,8 @@ class WebClient {
         this.emit("cJoinRoom",
         {
             "key": key,
-            "username": username
+            "username": username,
+            "time_zone_offset": (new Date()).getTimezoneOffset() * (-60_000)
             });
     }
     cLeaveRoom () {
