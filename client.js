@@ -19,7 +19,13 @@ const wrap = new (require("./classes/client_wrapper").Wrapper)(
             // hostname: "m20-sch57.site",
             // path: "",
             // port: 3005,
-            writeLogs: argv.logging === true
+            writeLogs: argv.logging === true,
+            logs: {
+                "HTTP-request": argv.logging === true,
+                "HTTP-response": argv.logging === true,
+                "Server-Socket": argv.logging === true,
+                "Client-Socket": argv.logging === true,
+            }
         },
         clientConfigs: {
             // reactionTime: 1000,
