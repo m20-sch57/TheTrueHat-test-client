@@ -5,8 +5,6 @@
 const argv = require("yargs")
     .argv;
 
-console.log(argv)
-
 const QS = require("querystring")
 const TP = require("./classes/true_client").TruePlayer;
 
