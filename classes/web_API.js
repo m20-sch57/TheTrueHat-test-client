@@ -36,7 +36,7 @@ class WebClient extends Fetcher {
         }
     }
 
-    logServerSignal = function (event, data) {
+    logServerSignal (event, data) {
         let level = "info";
         if (event === "sFailure") level = "warn";
         this.log({
@@ -47,7 +47,7 @@ class WebClient extends Fetcher {
         }, level);
     }
 
-    logClientSignal = function (event, data) {
+    logClientSignal (event, data) {
         let level = "info";
         this.log({
             "event": {"type": "Client-Socket", "name": event},
