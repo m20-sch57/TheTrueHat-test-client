@@ -14,7 +14,7 @@ const wrap = new (require("./classes/client_wrapper").Wrapper)(
         roomKey: argv.key,
         usersNumber: argv.num,
         username: argv.name,
-        // roomSettings: require("./roomConfig.json");
+        // roomSettings: require("./roomConfig.json"),
         webConfigs: {
             // protocol: "https:",
             // hostname: "m20-sch57.site",
