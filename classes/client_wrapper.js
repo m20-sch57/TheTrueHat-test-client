@@ -12,7 +12,7 @@ class Wrapper {
         this.username = username;
 
         this.client.web.ONsYouJoined((data) => {
-            if (data.host === this.username) {
+            if (data.state !== "wait" && data.host === this.username) {
                 this.client.applySettings(roomSettings);
             }
         })
