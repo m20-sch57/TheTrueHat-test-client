@@ -4,52 +4,22 @@
 
 const defaultConfig = require("./config.json").webDefaultConfig;
 
-const http = require("http");
-const querystring = require("querystring");
+const Fetcher = require("@lounres/flex_node_fetch").Fetcher
 const io = require("socket.io-client");
 
 module.exports.WebClient =
-class WebClient {
+class WebClient extends Fetcher {
     constructor(config={}) {
-        this.config = Object.assign(defaultConfig, config);
-        this.gameLog = [];
+        super(Object.assign(defaultConfig, config));
 
         this.socket = io.connect(this.config.protocol + "//" + this.config.hostname + ":" + this.config.port,
             {"path": "/socket.io"});
     }
 
-    #log = function (data, level) {
-        level = level || "info";
-        this.gameLog.push(data);
-        if (this.config.writeLogs) {
-            console[level](data);
-        }
-    }
-
-    #logRequest = function (request, data) {
-        let level = "info";
-        this.#log({
-            "event": {"type": "HTTP-request", "name": request},
-            data,
-            // "time": timeSync.getTime(), // TODO: Rewrite
-            // "humanTime": (new Date(timeSync.getTime()).toISOString())
-        }, level);
-    }
-
-    #logResponse = function (response, data) {
-        let level = "info";
-        this.#log({
-            "event": {"type": "HTTP-response", "name": response},
-            data,
-            // "time": timeSync.getTime(), // TODO: Rewrite
-            // "humanTime": (new Date(timeSync.getTime()).toISOString())
-        }, level);
-    }
-
-    #logServerSignal = function (event, data) {
+    logServerSignal = function (event, data) {
         let level = "info";
         if (event === "sFailure") level = "warn";
-        this.#log({
+        this.log({
             "event": {"type": "Server-Socket", "name": event},
             data,
             // "time": timeSync.getTime(), // TODO: Rewrite
@@ -57,58 +27,14 @@ class WebClient {
         }, level);
     }
 
-    #logClientSignal = function (event, data) {
+    logClientSignal = function (event, data) {
         let level = "info";
-        this.#log({
+        this.log({
             "event": {"type": "Client-Socket", "name": event},
             data,
             // "time": timeSync.getTime(), // TODO: Rewrite
             // "humanTime": (new Date(timeSync.getTime()).toISOString())
         }, level);
-    }
-
-    fetch (name, {path, method="GET", headers={}, data = null}) {
-        if (this.config.logs["HTTP-request"]) this.#logRequest(name, data);
-        const options = {
-            protocol: this.config.protocol,
-            hostname: this.config.hostname,
-            port: this.config.port,
-            path: this.config.path + path,
-            method,
-            headers
-        };
-
-        switch (method) {
-            case "GET":
-                options.path += "?" + querystring.stringify(data);
-                break;
-            case "POST": // Do not forget about "Content-Type".
-                if (data !== null) {
-                    data = JSON.stringify(data);
-                    options.headers["Content-Length"] = Buffer.byteLength(data);
-                }
-                break;
-        }
-
-        return new Promise((resolve, reject) => {
-            const req = http.request(options, res => {
-                res.setEncoding("utf8")
-                    .on("error", (err) => this.#log(err, "error"))
-                    .on("data", (data) => {
-                        if (this.config.logs["HTTP-response"]) this.#logResponse(name, data);
-                        resolve(data);
-                    })
-            }
-            ).on("error", (e) => reject(e))
-
-            switch (method) {
-                case "POST":
-                    if (data !== null) req.write(data);
-                    break;
-            }
-
-            req.end();
-        });
     }
 
     /**Implementation of getRoomInfo
@@ -150,7 +76,7 @@ class WebClient {
 
     emit(event, data) {
         this.socket.emit(event, data);
-        if (this.config.logs["Client-Socket"]) this.#logClientSignal(event, data);
+        if (this.config.logs["Client-Socket"]) this.logClientSignal(event, data);
     }
 
     cJoinRoom (key, username) {
@@ -197,7 +123,7 @@ class WebClient {
 
     on (event, callback) {
         this.socket.on(event, (data) => {
-            this.#logServerSignal(event, data);
+            this.logServerSignal(event, data);
             callback(data);
         });
     }
