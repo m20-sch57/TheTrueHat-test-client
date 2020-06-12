@@ -104,7 +104,7 @@ class WebClient extends Fetcher {
         {
             "key": key,
             "username": username,
-            "time_zone_offset": (new Date()).getTimezoneOffset() * (-60_000)
+            "time_zone_offset": (new Date()).getTimezoneOffset() * (-60000)
             });
     }
     cLeaveRoom () {
