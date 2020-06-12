@@ -4,12 +4,18 @@
 
 module.exports.Wrapper=
 class Wrapper {
-    constructor({clientClass, roomKey, usersNumber, username, webConfigs = {}, clientConfigs = {}}) {
+    constructor({clientClass, roomKey, usersNumber, username, roomSettings = {}, webConfigs = {}, clientConfigs = {}}) {
         this.client = new clientClass({username, webConfigs, clientConfigs});
 
         this.roomKey = roomKey;
         this.usersNumber = usersNumber;
         this.username = username;
+
+        this.client.web.ONsYouJoined((data) => {
+            if (data.host === this.username) {
+                this.client.applySettings(roomSettings);
+            }
+        })
 
         this.client.web.ONsPlayerJoined((data) => {
             if (data.host === this.username &&
