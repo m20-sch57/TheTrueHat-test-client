@@ -12,13 +12,15 @@ class Wrapper {
         this.username = username;
 
         this.client.web.ONsPlayerJoined((data) => {
-            if (data.host === this.username && data.playerList.length === this.usersNumber) {
+            if (data.host === this.username &&
+                data.playerList.filter((user) => user.online).length === this.usersNumber) {
                 this.client.startGame();
             }
         })
 
         this.client.web.ONsPlayerLeft((data) => {
-            if (data.host === this.username && data.playerList.length === this.usersNumber) {
+            if (data.host === this.username &&
+                data.playerList.filter((user) => user.online).length === this.usersNumber) {
                 this.client.startGame();
             }
         })

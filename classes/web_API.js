@@ -12,8 +12,28 @@ class WebClient extends Fetcher {
     constructor(config={}) {
         super(Object.assign(defaultConfig, config));
 
+        this.loggingSignals = [];
+
         this.socket = io.connect(this.config.protocol + "//" + this.config.hostname + ":" + this.config.port,
             {"path": "/socket.io"});
+
+        for (let event of [
+            "sPlayerJoined",
+            "sPlayerLeft",
+            "sYouJoined",
+            "sNewSettings",
+            "sFailure",
+            "sGameStarted",
+            "sNextTurn",
+            "sExplanationStarted",
+            "sNewWord",
+            "sWordExplanationEnded",
+            "sExplanationEnded",
+            "sWordsToEdit",
+            "sGameEnded"
+        ]) {
+            this.on(event, () => {});
+        }
     }
 
     logServerSignal = function (event, data) {
@@ -122,10 +142,17 @@ class WebClient extends Fetcher {
     }
 
     on (event, callback) {
-        this.socket.on(event, (data) => {
-            this.logServerSignal(event, data);
-            callback(data);
-        });
+        if (!this.loggingSignals.includes(event)) {
+            this.loggingSignals.push(event);
+            this.socket.on(event, (data) => {
+                this.logServerSignal(event, data);
+                callback(data);
+            });
+        } else {
+            this.socket.on(event, (data) => {
+                callback(data);
+            });
+        }
     }
 
     ONsPlayerJoined (callback) {
