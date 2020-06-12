@@ -15,7 +15,7 @@ class WebClient extends Fetcher {
         this.loggingSignals = [];
 
         this.socket = io.connect(this.config.protocol + "//" + this.config.hostname + ":" + this.config.port,
-            {"path": "/socket.io"});
+            {"path": this.config.path + "/socket.io"});
 
         for (let event of [
             "sPlayerJoined",
