@@ -2,6 +2,7 @@
     "webDefaultConfig": {
         "protocol": "http:",
         "hostname": "localhost",
+        "path": "",
         "port": 3005,
         "writeLogs": false,
         "logs": {

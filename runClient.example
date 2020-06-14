@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./client.js --key=ДУРОЦОЗЕСА --num=2 --name=Jaguar
+./client.js --key=ДУРОЦОЗЕСА --num=2 --name=Jaguar --logging --link

@@ -59,6 +59,37 @@ class TruePlayer {
             // this.leaveRoom();
             gameEndTrigger()
         })
+
+        this.web.ONsFailure((data) => { // TODO: Проверить, что не будет DDOS'а
+            switch (data.request) {
+                case "cJoinRoom":
+                    // this.web.cJoinRoom(key, this.username); // TODO: Инфа неверная, надо поправить
+                    break;
+                case "cLeaveRoom":
+                    this.web.cLeaveRoom();
+                    break;
+                case "cApplySettings":
+                    // this.web.cApplySettings(settings); // TODO: Инфа неверная, надо поправить
+                    break;
+                case "cStartGame":
+                    this.web.cStartGame();
+                    break;
+                case "cListenerReady":
+                    this.web.cListenerReady();
+                    break;
+                case "cSpeakerReady":
+                    this.web.cSpeakerReady();
+                    break;
+                case "cEndWordExplanation":
+                    this.web.cEndWordExplanation("explained");
+                    break;
+                case "cWordsEdited":
+                    // this.web.cWordsEdited(data.editWords); // TODO: Инфа неверная, надо поправить
+                    break;
+                case "cEndGame":
+                    break;
+            }
+        })
     }
 
     joinRoom (key) {
